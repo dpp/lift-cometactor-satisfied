@@ -1,0 +1,4 @@
+db.driver=org.postgresql.Driver
+db.url=jdbc:postgresql://localhost:5433/gacomposer
+db.user=gacomposer
+db.password=foobar
