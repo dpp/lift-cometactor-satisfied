@@ -3,3 +3,6 @@
 .targer
 .cache
 target/
+lib_managed
+project/boot
+project/build/target

@@ -47,7 +47,7 @@ class AccountDetailGraph extends CometActor {
       if (satisfied) {
         updateGraph
       } else {
-        partialUpdate(SetHtml(elemId, <p>Updating:s {satisfied} {UUID.randomUUID.toString}</p>))
+        partialUpdate(SetHtml(elemId, <p>Updating:s {satisfaction} {UUID.randomUUID.toString}</p>))
         ping
       }
     }
