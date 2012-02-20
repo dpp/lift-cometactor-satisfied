@@ -1,22 +1,16 @@
 package code.snippet
 
-import net.liftweb.util.Helpers._
-import net.liftweb.http.SHtml
-import net.liftweb.http.S
-import net.liftweb.http.DispatchSnippet
+import net.liftweb.util._
+import Helpers._
+import net.liftweb.http._
 import net.liftweb.sitemap._
-import net.liftweb.common.Full
-import org.joda.time.Months
-import net.liftweb.common.Empty
-import net.liftweb.http.Templates
-import org.joda.time.Weeks
-import net.liftweb.json._
-import net.liftweb.json.Serialization.{read, write}
+import net.liftweb.common._
 import java.util.UUID
+import xml._
 
 case class AccountDetailParam(accountId: String, propertyId: String)
 
-case class AccountDetailGraphWeeks(weeks: List[Tuple2[String, String]])
+case class AccountDetailGraphWeeks(weeks: List[(String, String)])
 
 class AccountDetail extends DispatchSnippet {
   def dispatch = {
@@ -24,16 +18,14 @@ class AccountDetail extends DispatchSnippet {
     case _ => render
   }
   
-  def weeklyGraph = {
-    var weeksTuples:List[Tuple2[String, String]] = List()
-    var i = 0
-    while(i < 100) {
-      weeksTuples ::= new Tuple2(UUID.randomUUID.toString, "tuple2")
-      i += 1
-    }
-    
-    implicit val formats = Serialization.formats(ShortTypeHints(List(classOf[AccountDetailGraphWeeks])))
-    "*" #> <div lift={"comet?type=AccountDetailGraph&weeks=" + write(new AccountDetailGraphWeeks(weeksTuples))}></div>
+  def weeklyGraph(in: NodeSeq): NodeSeq = {
+    // initialize the CometActor
+    for {
+      sess <- S.session
+    } sess.sendCometActorMessage("AccountDetailGraph", Empty,
+                                 AccountDetailGraphWeeks( (1 to 100).toList.map(_ => (UUID.randomUUID.toString, "tuple2"))))
+
+    <lift:comet type="AccountDetailGraph">{in}</lift:comet>
   }
   def render = {
     " * "  #> "AccountDetail"
